@@ -1,3 +1,5 @@
 #!/usr/bin/env ruby
 
 require 'rubbish'
+
+Rubbish::REPL.new(Rubbish::Config.new).start

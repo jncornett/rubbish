@@ -7,7 +7,17 @@ module Rubbish
       @alt_prompt = ':: '
     end
 
+    def configure_completion
+      Readline.completion_append_character = ' '
+      Readline.completion_proc = proc do |s|
+        (methods + instance_variables).map(&:to_s).select do |sym|
+          sym.start_with? s
+        end
+      end
+    end
+
     def start
+      configure_completion
       done = false
       until done
         begin
@@ -30,15 +40,16 @@ module Rubbish
             ok: true,
             value: instance_eval(lines.join("\n"))
           }
-        rescue SyntaxError => e
-          on_repl_syntax_error e, lines
-          alt_prompt = true
         rescue Exception => e
-          on_repl_exception e
-          return {
-            ok: false,
-            error: e
-          }
+          if SyntaxError === e && lines.last.strip.length > 0
+            on_repl_syntax_error e, lines
+            alt_prompt = true
+          else
+            return {
+              ok: false,
+              error: e
+            }
+          end
         end
       end
     end
@@ -60,20 +71,20 @@ module Rubbish
     def on_repl_exception e; end
 
     def on_result r
-      if result[:ok]
+      if r[:ok]
         on_ok_result r
       else
         on_error_result r
       end
     end
 
-    def on_ok_result result
-      @last = result[:value]
-      puts result[:value] if result[:value]
+    def on_ok_result r
+      @last = r[:value]
+      puts r[:value] if r[:value]
     end
 
-    def on_error_result result
-      puts result[:error]
+    def on_error_result r
+      puts r[:error]
     end
 
     def debug

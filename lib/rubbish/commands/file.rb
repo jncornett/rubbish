@@ -1,8 +1,11 @@
 module Rubbish
   module Commands
     module File
-      def ls
-        raise 'Not implemented'
+      def ls *patterns
+        patterns << '*' if patterns.empty?
+        patterns.map do |p|
+          Dir[p]
+        end.flatten
       end
 
       def cd arg = nil

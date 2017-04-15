@@ -2,6 +2,7 @@
 
 require 'rubbish'
 require 'rubbish/commands/file'
+require 'rubbish/commands/color'
 
 class REPL < Rubbish::REPL
   include Rubbish::Commands::File

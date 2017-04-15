@@ -1,5 +1,5 @@
 require 'rubbish/version'
-require 'rubbish/config'
+require 'rubbish/sandbox'
 require 'rubbish/repl'
 
 module Rubbish

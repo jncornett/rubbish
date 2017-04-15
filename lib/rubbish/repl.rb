@@ -1,10 +1,11 @@
 require 'readline'
+require 'rubbish/sandbox'
 
 module Rubbish
   class REPL
-    def initialize config
-      @config = config
-      @sandbox = Object.new
+    def initialize config = nil
+      @config = config || {}
+      @sandbox = Sandbox.new(@config)
     end
 
     def start
@@ -12,7 +13,7 @@ module Rubbish
       until done
         begin
           buf = Readline.readline(@config.prompt, true)
-          @sandbox.instance_eval(buf)
+          puts @sandbox.run_code(buf)
         rescue Interrupt
           done = true
         end

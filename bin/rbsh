@@ -2,4 +2,4 @@
 
 require 'rubbish'
 
-Rubbish::REPL.new(Rubbish::Config.new).start
+Rubbish::REPL.new.start

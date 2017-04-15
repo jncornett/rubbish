@@ -2,4 +2,6 @@
 
 require 'rubbish'
 
-Rubbish::REPL.new.start
+Rubbish::REPL.new({
+  prompt: '> '
+}).start

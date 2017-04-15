@@ -12,7 +12,7 @@ module Rubbish
       done = false
       until done
         begin
-          buf = Readline.readline(@config.prompt, true)
+          buf = Readline.readline(@config[:prompt], true)
           puts @sandbox.run_code(buf)
         rescue Interrupt
           done = true

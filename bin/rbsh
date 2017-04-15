@@ -1,7 +1,11 @@
 #!/usr/bin/env ruby
 
 require 'rubbish'
+require 'rubbish/commands/file'
 
-Rubbish::REPL.new({
-  prompt: '> '
-}).start
+class REPL < Rubbish::REPL
+  include Rubbish::Commands::File
+  include Rubbish::Commands::Color
+end
+
+REPL.new.start

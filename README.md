@@ -22,7 +22,9 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```bash
+rbsh
+```
 
 ## Development
 
@@ -32,5 +34,5 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rubbish.
+Bug reports and pull requests are welcome on GitHub at https://github.com/jncornett/rubbish.
 

@@ -4,17 +4,19 @@ module Rubbish
   class REPL
     def initialize config
       @config = config
+      @sandbox = Object.new
     end
 
     def start
+      done = false
       until done
-        buf = Readline.readline(@config.prompt, true)
-        p buf
+        begin
+          buf = Readline.readline(@config.prompt, true)
+          @sandbox.instance_eval(buf)
+        rescue Interrupt
+          done = true
+        end
       end
-    end
-
-    def done
-      false
     end
   end
 end

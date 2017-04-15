@@ -14,7 +14,7 @@ module Rubbish
     end
 
     def prompt= value
-      @values[:prompt] = prompt
+      @values[:prompt] = value
     end
   end
 end

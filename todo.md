@@ -1,0 +1,1 @@
+- add command helper and hook to interpret commands (space-separated string args) separately from evaluating ruby code

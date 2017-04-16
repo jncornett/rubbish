@@ -21,16 +21,20 @@ module Rubbish
     end
 
     def install_hooks
-      on :before_eval do
+      installed = []
+      off :before_eval
+      installed << (on :before_eval do
         @pwd = Dir.pwd
-      end
-      on :after_eval do |result|
+      end)
+      off :after_eval
+      installed << (on :after_eval do |result|
         if result[:ok]
           puts result[:value] unless result[:value].nil?
         else
           puts result[:error]
         end
-      end
+      end)
+      "#{installed.length} hooks installed"
     end
 
     def start
@@ -56,20 +60,15 @@ module Rubbish
         lines << Readline.readline(alt_prompt ? @alt_prompt : @prompt, true)
         hook :line, lines
         begin
-          return {
-            ok: true,
-            value: instance_eval(lines.join("\n"))
-          }
-        rescue Exception => e
+          value = instance_eval(lines.join("\n"))
+          return { ok: true, value: value }
+        rescue StandardError => e
           if SyntaxError === e && lines.last.strip.length > 0
             hook :syntax_error, e, lines
             alt_prompt = true
           else
             hook :exception, e
-            return {
-              ok: false,
-              error: e
-            }
+            return { ok: false, error: e }
           end
         end
       end

@@ -6,9 +6,11 @@ module Rubbish
     # Raise this to alter the arguments to successive callbacks in the chain
     class Arguments < Exception
       attr_reader :args
+      attr_reader :rv
 
-      def initialize *args
+      def initialize args, rv = nil
         @args = args
+        @rv = rv
       end
     end
 
@@ -17,27 +19,32 @@ module Rubbish
     end
 
     def on(sym, &block)
+      hook :register_hook, sym
       hooks[sym].push(block) unless block.nil?
     end
 
     def before(sym, &block)
+      hook :register_before_hook, sym
       hooks[sym].unshift(block) unless block.nil?
     end
 
     def off(sym)
+      hook :unregister_hook, sym
       hooks.delete(sym)
     end
 
     def hook(sym, *args)
-      hooks[sym].each do |hook|
+      hook :trigger_hook, sym, *args unless sym == :trigger_hook  # Don't want to trigger it twice
+      hooks[sym].map do |block|
         begin
-          hook.call(*args)
+          block.call(*args)
         rescue Arguments => e
           args = e.args
+          e.rv
         rescue Cancel
-          break
+          break []
         end
-      end
+      end.last
     end
   end
 end

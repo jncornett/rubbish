@@ -1,4 +1,4 @@
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+require 'spec_helper'
 require 'rubbish/hooks'
 
 describe Rubbish::Hooks do
@@ -95,11 +95,20 @@ describe Rubbish::Hooks do
   describe "Rubbish::Hooks::Arguments" do
     it "can be used to alter the arguments to successive procs in the chain" do
       doc = []
-      @hooks.on(:some_event) { |args| doc.push args }
-      @hooks.on(:some_event) { raise Rubbish::Hooks::Arguments.new(:new_args) }
-      @hooks.on(:some_event) { |args| doc.push args }
-      @hooks.hook :some_event, :args, :new_args
-      expect(doc).to eq([:args, :new_args])
+      @hooks.on(:some_event) { |args| doc << args }
+      @hooks.on(:some_event) { raise Rubbish::Hooks::Arguments.new([:first, :second]) }
+      @hooks.on(:some_event) do |first, second|
+        doc << first
+        doc << second
+      end
+      @hooks.hook :some_event, :args
+      expect(doc).to eq([:args, :first, :second])
+    end
+
+    it "can also be passed a return value as the second argument" do
+      @hooks.on(:some_event) { raise Rubbish::Hooks::Arguments.new([], :rv) }
+      rv = @hooks.hook :some_event
+      expect(rv).to be(:rv)
     end
   end
 end
